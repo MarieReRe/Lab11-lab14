@@ -5,6 +5,9 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
+
+//Bookhandler module requirement
+const bookHandler = require('./modules/books');
 app.post('/searches', bookhandler);
 
 const cors = require('cors');
