@@ -12,9 +12,14 @@ app.use(express.static('./public'))
 // app.use(express.urlencoded({extended:true}));
 
 
-
+//Get Index
 app.get('/', (request, response) => {
     response.render('pages/index');
+});
+
+//Get newPage
+app.get('/searches/new',(request,response)=>{
+response.render('pages/searches/new');
 });
 
 
