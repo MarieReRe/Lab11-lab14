@@ -5,7 +5,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
-const bookhandler = require('./modules/books');
 app.post('/searches', bookhandler);
 
 const cors = require('cors');
@@ -22,10 +21,18 @@ app.get('/', (request, response) => {
 });
 
 //Get newPage
-app.get('/searches/new',(request,response)=>{
-response.render('pages/searches/new');
+app.get('/searches/new', (request, response) => {
+    response.render('pages/searches/new');
 });
 
+//render the search form 
+app.get('/', searchRendering);
+
+
+//Handle errors
+function handleError(error, response) {
+    response.render('pages/error', { error: error });
+  }
 
 
 const PORT = process.env.PORT || 3000;

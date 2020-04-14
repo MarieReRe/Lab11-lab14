@@ -1,19 +1,23 @@
 'use strict';
-
-const superagent = require('superagent');
 require('dotenv').config();
 
-//create route hadnler
+const superagent = require('superagent');
+
+
+
+
+
+
+//create route handler
 function bookHandler(request, reponse, next) {
     const titleQuery = `${request.query.title}+intitle`;
-    const authorQuery =`${request.query.author}+inauthor`;
+    const authorQuery = `${request.query.author}+inauthor`;
     const url = 'https://www.googleapis.com/books/v1/volumes';
     superagent.get(url)
         .query({
             key: process.env.GOOGLE_KEY,
-            q:
-        
-            // author: request.query.authors
+            // q: 
+
         })
         .then(booksResponse => {
             let booksData = booksResponse.body;
@@ -22,11 +26,8 @@ function bookHandler(request, reponse, next) {
             })
             response.send(searchResults);
         })
-        .catch(err => {
-            console.error(err);
-            next(err);
-        });
-
+           .catch(err => 
+            handleError(err, response));
 };
 
 
@@ -35,8 +36,10 @@ function bookHandler(request, reponse, next) {
 function Books(bookData) {
     this.title = bookData.volumeinfo.title ? bookData.volumeinfo.title : 'This title does not exist';
     this.author = bookData.volumeinfo.authors ? bookData.volumeinfo.authors : 'We currently do not have any books by this author, contact us about getting this Author';
-        // this.ISBN =
-        // this.description =
+    // this.ISBN =
+    // this.description =
 };
+
+
 
 module.exports = bookHandler;
