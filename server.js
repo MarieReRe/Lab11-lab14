@@ -4,10 +4,14 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
+
+const bookhandler = require('./modules/books');
+app.post('/searches', bookhandler);
+
 const cors = require('cors');
 app.use(cors());
 app.set('view engine', 'ejs');
-
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'))
 // app.use(express.urlencoded({extended:true}));
 
