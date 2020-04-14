@@ -11,7 +11,7 @@ function bookHandler(request, reponse, next) {
     superagent.get(url)
         .query({
             key: process.env.GOOGLE_KEY,
-            q: 
+            q:
         
             // author: request.query.authors
         })
