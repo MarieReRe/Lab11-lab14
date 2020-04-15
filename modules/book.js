@@ -28,12 +28,13 @@ function bookHandler(request, response, next) {
 }
 // Book constructor!
 function Book(bookStats) {
+    const placeHolderImage = 'https://i.pinimg.com/originals/7b/41/f7/7b41f7ae3ac370c966f3931ed4ab991c.jpg';
     let httpRegex = /^(http:\/\/)/g
 
     this.title = bookStats.volumeInfo.title ? bookStats.volumeInfo.title : 'Title does not exist';
     this.author = bookStats.volumeInfo.authors ? bookStats.volumeInfo.authors : 'We currently do not have any books by this author, contact us about getting this Author';
     this.isbn = bookStats.volumeInfo.industryIdentifiers ? `ISBN_13 ${volumeInfo.industryIdentifiers[0].identifier}` : 'No ISBN available at this time, we are working on setting this up.';
-    this.image = bookStats.volumeInfo.imageLinks ? bookStats.volumeInfo.imageLinks.smallThumbnail.replace(httpRegex, 'https://') : 'Book cover coming soon, check back later!';
+    this.image = bookStats.volumeInfo.imageLinks ? bookStats.volumeInfo.imageLinks.smallThumbnail.replace(httpRegex, 'https://') : placeHolderImage;
     this.summary = bookStats.volumeInfo.summary ? bookStats.volumeInfo.summary : 'Reading the book now, summary coming soon!';
 
 }
