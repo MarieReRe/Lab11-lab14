@@ -3,6 +3,8 @@ require('dotenv').config();
 
 const superagent = require('superagent');
 const BOOK_KEY = process.env.BOOK_KEY;
+const client = require('../utility/database');
+const handleError = require('./error');
 
 //queries the API
 function bookHandler(request, response, next) {
@@ -26,6 +28,28 @@ function bookHandler(request, response, next) {
             next(err);
         });
 }
+
+
+// get books from database
+function getBooks(request, response) {
+    const SQL = 'SELECT * FROM books;';
+
+    client.query(SQL)
+        .then(results => {
+            const { rowcount, rows } = results;
+            console.log(' / db result', rows);
+
+            // response.send('rows')
+            response.render('index', {
+                books: rows
+            });
+        })
+        .catch(err => {
+            handleError(err, response);
+        });
+}
+
+
 // Book constructor!
 function Book(bookStats) {
     const placeHolderImage = 'https://i.pinimg.com/originals/7b/41/f7/7b41f7ae3ac370c966f3931ed4ab991c.jpg';
