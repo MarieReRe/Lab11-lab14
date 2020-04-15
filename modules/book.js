@@ -2,44 +2,41 @@
 require('dotenv').config();
 
 const superagent = require('superagent');
+const BOOK_KEY = process.env.BOOK_KEY;
 
-
-
-
-
-
-//create route handler
-function bookHandler(request, reponse, next) {
-    const titleQuery = `${request.query.title}+intitle`;
-    const authorQuery = `${request.query.author}+inauthor`;
+//queries the API
+function bookHandler(request, response, next) {
     const url = 'https://www.googleapis.com/books/v1/volumes';
-    superagent.get(url)
+    superagent(url)
         .query({
-            key: process.env.GOOGLE_KEY,
-            // q: 
-
+            key: BOOK_KEY,
+            q: `+in${request.body.radio}:${request.body.searchTerm}`
         })
-        .then(booksResponse => {
-            let booksData = booksResponse.body;
-            let searchResults = booksData.books.map(bookData => {
-                return new Books(bookData);
-            })
-            response.send(searchResults);
+        .then(bookResponse => {
+            console.log(response.body);
+            const bookData = bookResponse.body; // JSON.parse(bookResponse.text);
+            const bookResults = bookData.items.map(bookStats => {
+                return new Book(bookStats);
+            });
+            response.send(bookResults);
+            // response.render('pages/searches/show');
         })
-           .catch(err => 
-            handleError(err, response));
-};
+        .catch(err => {
+            console.error(err);
+            next(err);
+        });
+}
+// Book constructor!
+function Book(bookStats) {
+    let httpRegex = /^(http:\/\/)/g
 
+    this.title = bookStats.volumeInfo.title ? bookStats.volumeInfo.title : 'Title does not exist';
+    this.author = bookStats.volumeInfo.authors ? bookStats.volumeInfo.authors : 'We currently do not have any books by this author, contact us about getting this Author';
+    this.isbn = bookStats.volumeInfo.industryIdentifiers ? `ISBN_13 ${volumeInfo.industryIdentifiers[0].identifier}` : 'No ISBN available at this time, we are working on setting this up.';
+    this.image = bookStats.volumeInfo.imageLinks ? bookStats.volumeInfo.imageLinks.smallThumbnail.replace(httpRegex, 'https://') : 'Book cover coming soon, check back later!';
+    this.summary = bookStats.volumeInfo.summary ? bookStats.volumeInfo.summary : 'Reading the book now, summary coming soon!';
 
-
-// book constructor function
-function Books(bookData) {
-    this.title = bookData.volumeinfo.title ? bookData.volumeinfo.title : 'This title does not exist';
-    this.author = bookData.volumeinfo.authors ? bookData.volumeinfo.authors : 'We currently do not have any books by this author, contact us about getting this Author';
-    // this.ISBN =
-    // this.description =
-};
-
-
+}
 
 module.exports = bookHandler;
+

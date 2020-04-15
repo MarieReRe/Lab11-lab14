@@ -1,21 +1,38 @@
 'use strict';
 
-require('dotenv').config();
 
+//Environmental Variables
+require('dotenv').config();
+const PORT = process.env.PORT || 3000;
+
+
+
+//application dependencies
 const express = require('express');
 const app = express();
 
+// Database setup
+const client = require('./util/database');
 
-//Bookhandler module requirement
-const bookHandler = require('./modules/books');
-app.post('/searches', bookhandler);
-
+//Middleware
 const cors = require('cors');
 app.use(cors());
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'))
-// app.use(express.urlencoded({extended:true}));
+
+
+
+
+// API Routes
+const bookHandler = require('./modules/book');
+app.post('/searches', bookHandler);
+
+
+
+
+
+
 
 
 //Get Index
@@ -25,18 +42,25 @@ app.get('/', (request, response) => {
 
 //Get newPage
 app.get('/searches/new', (request, response) => {
-    response.render('pages/searches/new');
+    response.render('pages/searches/show');
 });
 
 //render the search form 
-app.get('/', searchRendering);
+// app.get('/', searchRendering);
 
 
 //Handle errors
-function handleError(error, response) {
-    response.render('pages/error', { error: error });
-  }
+// function handleError(error, response) {
+//     response.render('pages/error', { error: error });
+//   }
 
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+//Client connect
+client.connect()
+  .then(() => {
+    console.log('Database/PG connected.');
+    app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+  })
+  .catch(error => {
+    throw `Something went wrong: ${error}`;
+  });
