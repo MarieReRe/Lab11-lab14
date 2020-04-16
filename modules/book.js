@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const superagent = require('superagent');
 const BOOK_KEY = process.env.BOOK_KEY;
-const client = require('../utility/database');
+const client = require('../util/database');
 const handleError = require('./error');
 
 //queries the API
@@ -63,5 +63,7 @@ function Book(bookStats) {
 
 }
 
-module.exports = bookHandler;
-
+module.exports = {
+    bookHandler,
+    getBooks,
+  };

@@ -25,7 +25,9 @@ app.use(express.static('./public'))
 
 
 // API Routes
-const bookHandler = require('./modules/book');
+const bookModule = require('./modules/book');
+const {bookHandler, getBooks} = bookModule;
+app.get('/', getBooks);
 app.post('/searches', bookHandler);
 
 
@@ -40,20 +42,14 @@ app.get('/', (request, response) => {
     response.render('pages/index');
 });
 
-//Get newPage
+//Renders search form
 app.get('/searches/new', (request, response) => {
-    response.render('pages/searches/show');
+    response.render('pages/searches/new');
 });
 
-//render the search form 
-// app.get('/', searchRendering);
 
-
-//Handle errors
-// function handleError(error, response) {
-//     response.render('pages/error', { error: error });
-//   }
-
+// Errors
+app.get('*', (request, response) => response.status(404).render('./pages/error-view', {error:'(404) Page not found'}));
 
 //Client connect
 client.connect()
